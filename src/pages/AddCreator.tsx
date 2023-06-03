@@ -8,8 +8,9 @@ export function AddCreator() {
     description: "",
     imgURL: "" // Updated property name
   });
+  
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (event : any) => {
     const { name, value } = event.target;
     setCreator(prev => ({
       ...prev,
@@ -17,7 +18,7 @@ export function AddCreator() {
     }));
   };
 
-  const addCreator = async (event: React.FormEvent) => {
+  const addCreator = async (event : any) => {
     event.preventDefault();
 
     const { error } = await supabase.from("creators").insert([creator]);
@@ -37,34 +38,74 @@ export function AddCreator() {
     window.location.href = "/";
   };
 
+  // Define styles
+  const divStyle = {
+    backgroundColor: "#0f4c81",
+    marginBottom: "1rem",
+    padding: "1rem",
+    borderRadius: "8px",
+    color: "white"
+  };
+
+  const buttonStyle = {
+    backgroundColor: "#0f4c81",
+    color: "white",
+    border: "none",
+    padding: "0.5rem 1rem",
+    fontSize: "1rem",
+    borderRadius: "4px",
+    cursor: "pointer",
+    transition: "border-color 0.3s ease"
+  };
+  
+  const buttonHoverStyle = {
+    ...buttonStyle,
+    border: "2px solid white"
+  };
+
+  const [submitButtonStyle, setSubmitButtonStyle] = useState(buttonStyle);
+
+  const handleButtonMouseEnter = () => {
+    setSubmitButtonStyle(buttonHoverStyle);
+  };
+
+  const handleButtonMouseLeave = () => {
+    setSubmitButtonStyle(buttonStyle);
+  };
+
   return (
-    <div className="AddEditCreator">
+    <div>
       <form id="addCreatorForm" onSubmit={addCreator}>
-        <label>Name</label>
-        <input type="text" id="name" name="name" value={creator.name} onChange={handleChange} required />
+        <div style={divStyle}>
+          <label htmlFor="name">Name: </label>
+          <input type="text" id="name" name="name" value={creator.name} onChange={handleChange} required />
+        </div>
 
-        <label>
-          Image
-          <p>Provide a link to an image of your creator. Be sure to include the http://</p>
-        </label>
-        <input type="text" id="imageURL" name="imgURL" value={creator.imgURL} onChange={handleChange} required />
+        <div style={divStyle}>
+          <label htmlFor="imageURL">ImageURL: </label>
+          <input type="text" id="imageURL" name="imgURL" value={creator.imgURL} onChange={handleChange} required />
+        </div>
 
-        <label>
-          Description
-          <p>Provide a description of the creator. Who are they? What makes them interesting?</p>
-        </label>
-        <textarea name="description" rows={3} cols={50} id="description" value={creator.description} onChange={handleChange} required></textarea>
+        <div style={divStyle}>
+          <label htmlFor="description">Description: </label>
+          <textarea name="description" rows={3} cols={50} id="description" value={creator.description} onChange={handleChange} required></textarea>
+        </div>
 
-        <h3>Social Media Links</h3>
-        <p>Provide at least one of the creator's social media links.</p>
+        <div style={divStyle}>
+          <label htmlFor="url">Social Media URL: </label>
+          <input type="text" id="url" name="url" value={creator.url} onChange={handleChange} />
+        </div>
 
-        <label>
-          url
-          <p>The creator's social media url</p>
-        </label>
-        <input type="text" id="url" name="url" value={creator.url} onChange={handleChange} />
-
-        <button type="submit">Submit</button>
+        <div>
+          <button
+            type="submit"
+            style={submitButtonStyle}
+            onMouseEnter={handleButtonMouseEnter}
+            onMouseLeave={handleButtonMouseLeave}
+          >
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   );

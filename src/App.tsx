@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Route, Routes } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
 import { AddCreator } from './pages/AddCreator';
 import { EditCreator } from './pages/EditCreator';
 import { ShowCreators } from './pages/ShowCreators';
@@ -45,28 +45,46 @@ function App() {
     fetchCreators();
   }, []);
 
+  let backgroundImgURL =
+    'https://images.pexels.com/photos/2264245/pexels-photo-2264245.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
+
+  const headerStyle: React.CSSProperties = {
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${backgroundImgURL})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    width: '100%',
+    height: '75vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 1, // Adjusted zIndex to 1
+  };
+
+  const contentStyle: React.CSSProperties = {
+    marginTop: '100vh',
+    minHeight: '100vh'
+  };
+
   return (
     <div>
-      {/* static header of app */}
-      <header>
+      <div style={headerStyle}>
         <h1>creatorverse</h1>
         <nav>
           <ul>
             <li>
-              <a href="/" role="button">
-                View All Creators
-              </a>
+              <Link to="/">View All Creators</Link>
             </li>
             <li>
-              <a href="/new" role="button">
-                Add a Creator
-              </a>
+              <Link to="/new">Add a Creator</Link>
             </li>
           </ul>
         </nav>
-      </header>
+      </div>
 
-      <div>
+      <div style={contentStyle}>
         <Routes>
           <Route path="/" element={<ShowCreators creatorInfo={creators} />} />
           <Route path="/edit/:id" element={<EditCreator creatorInfo={creators} />} />
