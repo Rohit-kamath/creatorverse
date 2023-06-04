@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "../client";
 import { Link, useParams } from "react-router-dom";
 
-
 type CreatorProp = {
   name: string;
   url: string;
@@ -10,78 +9,139 @@ type CreatorProp = {
   imgURL: string;
   id: number;
 };
-  
+
 type creatorArrayProp = {
   creatorInfo: CreatorProp[];
 };
 
-  
 export function ViewCreator({ creatorInfo }: creatorArrayProp) {
-  // Define styles
-
-  const [creator, setCreator] = useState({
+  const { id } = useParams();
+  const [creator, setCreator] = useState<CreatorProp>({
     id: 0,
     name: "",
     url: "",
     description: "",
-    imgURL: "" // Updated property name
+    imgURL: "",
   });
-
-  function openSocialMediaURL(){
-    window.open(`${creator.url}`, "_blank")
-  }
-
-  const {id} = useParams()
+  const [hoveredButton, setHoveredButton] = useState<string>("");
 
   useEffect(() => {
-    const result = creatorInfo.find(individualCreator => String(individualCreator.id) === id);
-  
+    const result = creatorInfo.find((individualCreator) => String(individualCreator.id) === id);
+
     if (result) {
-      setCreator({
-        id: result.id,
-        name: result.name,
-        url : result.url,
-        description: result.description,
-        imgURL: result.imgURL
-      });
+      setCreator(result);
     }
   }, [creatorInfo, id]);
 
-  const deleteCreator = async(event : any) => {
-    event.preventDefault();
-    const { error } = await supabase
-    .from('creators')
-    .delete()
-    .eq('id', id)
+  const repeatStyle = {
+    color: "white",
+    border: "none",
+    padding: "0.5rem 1rem",
+    fontSize: "1rem",
+    borderRadius: "4px",
+    cursor: "pointer",
+    transition: "border-color 0.3s ease",
+  };
+  const commonButtonStyle = {
+    backgroundColor: "#0f4c81",
+    ...repeatStyle,
+  };
 
-    if(error){
-      console.log(error)
+  const viewButtonStyle = {
+    ...commonButtonStyle,
+    ...(hoveredButton === "url" && { border: "2px solid white" }),
+  };
+
+  const editButtonStyle = {
+    ...commonButtonStyle,
+    ...(hoveredButton === "edit" && { border: "2px solid white" }),
+  };
+
+  const deleteButtonStyle = {
+    backgroundColor: "red",
+    ...repeatStyle,
+    ...(hoveredButton === "delete" && { border: "2px solid white" }),
+  };
+
+  const handleButtonMouseEnter = (buttonName: string) => {
+    setHoveredButton(buttonName);
+  };
+
+  const handleButtonMouseLeave = () => {
+    setHoveredButton("");
+  };
+
+  const openSocialMediaURL = () => {
+    console.log(creator.id);
+    if (creator.url) {
+      const url = creator.url.startsWith("http") ? creator.url : `http://${creator.url}`;
+      window.open(url, "_blank");
     }
+  };
 
-    window.location.href = "/"
-  }
+  const handleDeleteConfirmation = async () => {
+    // Show custom confirmation dialog
+    const shouldDelete = await customConfirm("Are you sure you want to delete this creator?");
+
+    if (shouldDelete) {
+      const { error } = await supabase.from("creators").delete().eq("id", id);
+      if (error) {
+        console.log(error);
+      }
+      window.location.href = "/";
+    }
+  };
+
+  const customConfirm = (message: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const confirmed = window.confirm(message);
+      resolve(confirmed);
+    });
+  };
 
   return (
-        <div className="ViewCreator">
+    <div>
+      <section>
+        <img src={creator.imgURL} alt={creator.name} />
+      </section>
 
-          <section className="creator-image">
-              <img src={creator.imgURL} alt={creator.name} />
-          </section>
+      <section>
+        <h2 style={{color : "white"}}>{creator.name}</h2>
+        <p style={{color : "white"}}> {creator.description}</p>
 
-          <section className="creator-info">
-              <h2>{creator.name}</h2>
-              <p>{creator.description}</p>
+        {creator.url && (
+          <button
+            onClick={openSocialMediaURL}
+            style={viewButtonStyle}
+            onMouseEnter={() => handleButtonMouseEnter("url")}
+            onMouseLeave={handleButtonMouseLeave}
+          >
+            {creator.url}
+          </button>
+        )}
+      </section>
 
-              {creator.url !== null && creator.url !== '' ? (
-                  <button className="social-button" onClick={openSocialMediaURL}><i className="fa-brands fa-youtube"></i>@{creator.url}</button>
-              ) : "" }
-          </section>
+      <section>
+        <Link to={"/edit/" + creator.id}>
+          <button
+            onClick={() => {}}
+            style={editButtonStyle}
+            onMouseEnter={() => handleButtonMouseEnter("edit")}
+            onMouseLeave={handleButtonMouseLeave}
+          >
+            Edit
+          </button>
+        </Link>
 
-          <section className="modify-creator">
-              <Link to={'/edit/' + creator.id}><button onClick={() => window.scrollTo({top: 600, behavior: 'smooth'})}>Edit</button></Link>
-              <button onClick={deleteCreator} className="delete-button">Delete</button>
-          </section>
-
-        </div>
+        <button
+          onClick={handleDeleteConfirmation}
+          style={deleteButtonStyle}
+          onMouseEnter={() => handleButtonMouseEnter("delete")}
+          onMouseLeave={handleButtonMouseLeave}
+        >
+          Delete
+        </button>
+      </section>
+    </div>
   );
 }

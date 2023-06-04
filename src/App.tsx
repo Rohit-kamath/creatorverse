@@ -53,33 +53,74 @@ function App() {
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     width: '100%',
-    height: '75vh',
+    height: '85vh',
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
     top: 0,
     left: 0,
-    zIndex: 1, // Adjusted zIndex to 1
+    zIndex: 1,
+    borderBottom: '2px solid white',
   };
 
   const contentStyle: React.CSSProperties = {
     marginTop: '100vh',
-    minHeight: '100vh'
+    minHeight: '100vh',
+  };
+
+  const h1Style: React.CSSProperties = {
+    color: 'white',
+    fontSize: '8em',
+    marginBottom: '1rem', // Add margin bottom to create space
+  };
+
+  const [isButtonHovered1, setIsButtonHovered1] = useState(false);
+  const [isButtonHovered2, setIsButtonHovered2] = useState(false);
+  
+  const buttonStyle: React.CSSProperties = {
+    margin: '0 0.5rem',
+    backgroundColor: '#0f4c81',
+    color: 'white',
+    border: 'none',
+    padding: '0.5rem 1rem',
+    fontSize: '1rem',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    transition: 'border-color 0.3s ease',
+    width: '200px', // Set a fixed button width
+  };
+
+  const buttonHoverStyle = {
+    ...buttonStyle,
+    border: '2px solid white',
   };
 
   return (
     <div>
       <div style={headerStyle}>
-        <h1>creatorverse</h1>
+        <h1 style={h1Style}>creatorverse</h1>
         <nav>
-          <ul>
-            <li>
-              <Link to="/">View All Creators</Link>
-            </li>
-            <li>
-              <Link to="/new">Add a Creator</Link>
-            </li>
+          <ul style={{listStyle: "none", padding: 0}}>
+            <Link to="/">
+              <button
+                style={isButtonHovered1 ? buttonHoverStyle : buttonStyle}
+                onMouseEnter={() => setIsButtonHovered1(true)}
+                onMouseLeave={() => setIsButtonHovered1(false)}
+              >
+                View All Creators
+              </button>
+            </Link>
+            <Link to="/new">
+              <button
+                style={isButtonHovered2 ? buttonHoverStyle : buttonStyle}
+                onMouseEnter={() => setIsButtonHovered2(true)}
+                onMouseLeave={() => setIsButtonHovered2(false)}
+              >
+                Add a Creator
+              </button>
+            </Link>
           </ul>
         </nav>
       </div>

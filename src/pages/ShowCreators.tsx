@@ -20,8 +20,15 @@ export function ShowCreators({ creatorInfo }: creatorArrayProp) {
     setCreators(creatorInfo);
   }, [creatorInfo]);
 
+  const gridContainerStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'auto',
+    gridRowGap: '20px',
+    justifyContent: 'center',
+  };
+
   return (
-    <div>
+    <div style={gridContainerStyle}>
       {creators && creators.length ? (
         creators.map((creator: CreatorProp) => (
           <Card
@@ -30,6 +37,7 @@ export function ShowCreators({ creatorInfo }: creatorArrayProp) {
             description={creator.description}
             imgURL={creator.imgURL}
             id={creator.id}
+            key={creator.id}
           />
         ))
       ) : (
