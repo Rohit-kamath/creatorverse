@@ -26,7 +26,9 @@ export function ViewCreator({ creatorInfo }: creatorArrayProp) {
   const [hoveredButton, setHoveredButton] = useState<string>("");
 
   useEffect(() => {
-    const result = creatorInfo.find((individualCreator) => String(individualCreator.id) === id);
+    const result = creatorInfo.find(
+      (individualCreator) => String(individualCreator.id) === id
+    );
 
     if (result) {
       setCreator(result);
@@ -74,17 +76,24 @@ export function ViewCreator({ creatorInfo }: creatorArrayProp) {
   const openSocialMediaURL = () => {
     console.log(creator.id);
     if (creator.url) {
-      const url = creator.url.startsWith("http") ? creator.url : `http://${creator.url}`;
+      const url = creator.url.startsWith("http")
+        ? creator.url
+        : `http://${creator.url}`;
       window.open(url, "_blank");
     }
   };
 
   const handleDeleteConfirmation = async () => {
     // Show custom confirmation dialog
-    const shouldDelete = await customConfirm("Are you sure you want to delete this creator?");
+    const shouldDelete = await customConfirm(
+      "Are you sure you want to delete this creator?"
+    );
 
     if (shouldDelete) {
-      const { error } = await supabase.from("creators").delete().eq("id", id);
+      const { error } = await supabase
+        .from("creators")
+        .delete()
+        .eq("id", id);
       if (error) {
         console.log(error);
       }
@@ -102,12 +111,21 @@ export function ViewCreator({ creatorInfo }: creatorArrayProp) {
   return (
     <div>
       <section>
-        <img src={creator.imgURL} alt={creator.name} />
+        <img
+          src={creator.imgURL}
+          alt={creator.name}
+          style={{
+            width: "300px",
+            height: "300px",
+            objectFit: "cover",
+            border: "2px solid white",
+          }}
+        />
       </section>
 
       <section>
-        <h2 style={{color : "white"}}>{creator.name}</h2>
-        <p style={{color : "white"}}> {creator.description}</p>
+        <h2 style={{ color: "white" }}>{creator.name}</h2>
+        <p style={{ color: "white" }}>{creator.description}</p>
 
         {creator.url && (
           <button

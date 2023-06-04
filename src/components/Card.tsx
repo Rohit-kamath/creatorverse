@@ -32,7 +32,7 @@ export function Card({ name, url, description, imgURL, id }: CardProps) {
   const buttonStyle: React.CSSProperties = {
     color: 'white',
     borderRadius: '50%',
-    backgroundColor: 'black',
+    backgroundColor: "#0f4c81",
     padding: '10px',
     display: 'flex',
     alignItems: 'center',
